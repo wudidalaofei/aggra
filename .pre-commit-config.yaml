@@ -3,3 +3,11 @@ repos:
     rev: v2.17.0
     hooks:
       - id: validate_manifest
+
+  - repo:  local
+    hooks:
+      - id: system
+        name: Requirements
+        entry: poetry export --format=requirements.txt --without-hashes --output=requirements.txt
+        pass_filenames: false
+        language: system
