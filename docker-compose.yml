@@ -1,0 +1,57 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: 'postgres:14.2-alpine3.15'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aggra}
+      PGDATA: /data/postgres
+
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+
+    networks:
+      - postgres
+    restart: always
+
+  redis:
+    image: 'redis:6.2.6-alpine'
+    environment:
+      requirepass: ${REDIS_PASSWORD:-aggra}
+    volumes:
+      - redis:/data
+
+    ports:
+      - "6379:6379"
+    networks:
+      - redis
+    restart: always
+
+  rabbitmq:
+    image: "rabbitmq:3.9.15-management-alpine"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-aggra}
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/
+    networks:
+      - rabbitmq
+
+networks:
+  postgres:
+    driver: bridge
+  redis:
+    driver: bridge
+  rabbitmq:
+    driver: bridge
+
+volumes:
+  postgres:
+  redis:
+  rabbitmq:
